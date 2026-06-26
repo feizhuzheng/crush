@@ -6,6 +6,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/crush/internal/session"
 	"github.com/charmbracelet/crush/internal/ui/chat"
 	"github.com/charmbracelet/crush/internal/ui/styles"
@@ -98,8 +99,8 @@ func todoPill(todos []session.Todo, spinnerView string, focused, panelFocused bo
 		if currentTodo.ActiveForm != "" {
 			taskText = currentTodo.ActiveForm
 		}
-		if len(taskText) > maxTaskDisplayLength {
-			taskText = taskText[:maxTaskDisplayLength-1] + "…"
+		if ansi.StringWidth(taskText) > maxTaskDisplayLength {
+			taskText = ansi.Truncate(taskText, maxTaskDisplayLength-1, "…")
 		}
 		task := t.Pills.TodoCurrentTask.Render(taskText)
 		content = fmt.Sprintf("%s %s %s  %s", spinnerView, label, progress, task)
@@ -124,8 +125,8 @@ func queueList(queueItems []string, t *styles.Styles) string {
 	var lines []string
 	for _, item := range queueItems {
 		text := item
-		if len(text) > maxQueueDisplayLength {
-			text = text[:maxQueueDisplayLength-1] + "…"
+		if ansi.StringWidth(text) > maxQueueDisplayLength {
+			text = ansi.Truncate(text, maxQueueDisplayLength-1, "…")
 		}
 		prefix := t.Pills.QueueItemPrefix.Render() + " "
 		lines = append(lines, prefix+t.Pills.QueueItemText.Render(text))
